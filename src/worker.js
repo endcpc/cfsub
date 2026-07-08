@@ -319,7 +319,7 @@ function renderClash(nodes) {
   );
 
   const allGroupMembers = [
-    `      - "自动选择"`,
+    `      - "自動選擇"`,
     ...proxyNames,
     `      - DIRECT`,
   ];
@@ -337,7 +337,7 @@ function renderClash(nodes) {
     ...(proxies.length ? proxies : []),
     ``,
     `proxy-groups:`,
-    `  - name: "自动选择"`,
+    `  - name: "自動選擇"`,
     `    type: url-test`,
     `    url: "http://www.gstatic.com/generate_204"`,
     `    interval: 300`,
@@ -345,13 +345,13 @@ function renderClash(nodes) {
     `    proxies:`,
     ...autoGroupMembers,
     ``,
-    `  - name: "节点选择"`,
+    `  - name: "節點選擇"`,
     `    type: select`,
     `    proxies:`,
     ...allGroupMembers,
     ``,
     `rules:`,
-    `  - MATCH,节点选择`,
+    `  - MATCH,節點選擇`,
   ].join('\n');
 }
 
@@ -403,7 +403,7 @@ async function createUniqueShortId(env, tries = 8) {
     const exists = await env.SUB_STORE.get(`sub:${id}`);
     if (!exists) return id;
   }
-  throw new Error('无法生成唯一短链接，请稍后再试');
+  throw new Error('無法生成唯一短鏈接，請稍後再試');
 }
 
 function normalizeLines(value = '') {
@@ -438,14 +438,14 @@ async function handleGenerate(request, env, url) {
   try {
     body = await request.json();
   } catch {
-    return json({ ok: false, error: '请求体不是合法 JSON' }, 400);
+    return json({ ok: false, error: '請求體不是合法 JSON' }, 400);
   }
 
   const baseNodes = parseRawLinks(body.nodeLinks || '');
   const preferredEndpoints = parsePreferredEndpoints(body.preferredIps || '');
 
-  if (!baseNodes.length) return json({ ok: false, error: '没有识别到可用节点' }, 400);
-  if (!preferredEndpoints.length) return json({ ok: false, error: '没有识别到可用优选地址' }, 400);
+  if (!baseNodes.length) return json({ ok: false, error: '沒有識別到可用節點' }, 400);
+  if (!preferredEndpoints.length) return json({ ok: false, error: '沒有識別到可用優選地址' }, 400);
 
   const options = {
     namePrefix: body.namePrefix || '',
@@ -512,7 +512,7 @@ async function handleGenerate(request, env, url) {
       host: node.host || '',
       sni: node.sni || '',
     })),
-    warnings: accessToken ? [] : ['未检测到 SUB_ACCESS_TOKEN，订阅链接将没有第二层访问保护。'],
+    warnings: accessToken ? [] : ['未檢測到 SUB_ACCESS_TOKEN，訂閱鏈接將沒有第二層訪問保護。'],
   });
 }
 
