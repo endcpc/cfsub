@@ -18,7 +18,7 @@ export function splitCsvLike(text = '') {
 
 export function ensureSecret(secret) {
   if (!secret || String(secret).trim().length < 16) {
-    throw new Error('未配置 SUB_LINK_SECRET，或长度过短（建议至少 16 个字符）。');
+    throw new Error('未配置 SUB_LINK_SECRET，或長度過短（建議至少 16 個字符）。');
   }
   return String(secret).trim();
 }
@@ -67,7 +67,7 @@ export async function encryptPayload(payload, secret) {
 export async function decryptPayload(token, secret) {
   const bytes = base64UrlToBytes(token);
   if (bytes.length <= 12) {
-    throw new Error('订阅令牌无效。');
+    throw new Error('訂閱令牌無效。');
   }
   const iv = bytes.slice(0, 12);
   const cipher = bytes.slice(12);
@@ -91,7 +91,7 @@ export function parseNodeLinks(inputText) {
     .filter(Boolean);
 
   if (!lines.length) {
-    throw new Error('请至少粘贴 1 个 vmess:// / vless:// / trojan:// 节点链接。');
+    throw new Error('請至少粘貼 1 個 vmess:// / vless:// / trojan:// 節點鏈接。');
   }
 
   const nodes = [];
@@ -101,12 +101,12 @@ export function parseNodeLinks(inputText) {
     try {
       nodes.push(parseSingleNode(line));
     } catch (error) {
-      warnings.push(`第 ${index + 1} 行解析失败：${error.message}`);
+      warnings.push(`第 ${index + 1} 行解析失敗：${error.message}`);
     }
   });
 
   if (!nodes.length) {
-    throw new Error(warnings[0] || '没有解析出任何可用节点。');
+    throw new Error(warnings[0] || '沒有解析出任何可用節點。');
   }
 
   return { nodes, warnings, normalizedInput: text };
@@ -115,7 +115,7 @@ export function parseNodeLinks(inputText) {
 export function parsePreferredEndpoints(inputText) {
   const items = splitCsvLike(inputText);
   if (!items.length) {
-    throw new Error('请至少填写 1 个优选 IP 或优选域名。');
+    throw new Error('請至少填寫 1 個優選 IP 或優選域名。');
   }
 
   const endpoints = [];
@@ -132,12 +132,12 @@ export function parsePreferredEndpoints(inputText) {
       seen.add(dedupeKey);
       endpoints.push(endpoint);
     } catch (error) {
-      warnings.push(`第 ${index + 1} 个优选地址解析失败：${error.message}`);
+      warnings.push(`第 ${index + 1} 個優選地址解析失敗：${error.message}`);
     }
   });
 
   if (!endpoints.length) {
-    throw new Error(warnings[0] || '没有解析出任何可用优选地址。');
+    throw new Error(warnings[0] || '沒有解析出任何可用優選地址。');
   }
 
   return { endpoints, warnings };
@@ -152,7 +152,7 @@ export function expandNodes(baseNodes, endpoints, options = {}) {
   baseNodes.forEach((baseNode) => {
     const originalTlsHost = getEffectiveTlsHost(baseNode);
     if (keepOriginalHost && !originalTlsHost) {
-      warnings.push(`节点「${baseNode.name}」缺少 Host/SNI/原始域名，替换成优选 IP 后可能无法握手。`);
+      warnings.push(`節點「${baseNode.name}」缺少 Host/SNI/原始域名，替換成優選 IP 後可能無法握手。`);
     }
 
     endpoints.forEach((endpoint, index) => {
@@ -228,7 +228,7 @@ export function renderSubscription(target, nodes, requestUrl) {
         filename: 'subscription.json',
       };
     default:
-      throw new Error(`不支持的订阅输出格式：${target}`);
+      throw new Error(`不支持的訂閱輸出格式：${target}`);
   }
 }
 
@@ -240,7 +240,7 @@ export function renderRawSubscription(nodes) {
 export function renderClashSubscription(nodes) {
   const supportedNodes = nodes.filter(isClashSupportedNode);
   if (!supportedNodes.length) {
-    throw new Error('没有可导出为 Clash 的节点。当前版本主要支持 VMess/VLESS/Trojan 的 WS/TCP/GRPC/HTTP 常见格式。');
+    throw new Error('沒有可導出爲 Clash 的節點。當前版本主要支持 VMess/VLESS/Trojan 的 WS/TCP/GRPC/HTTP 常見格式。');
   }
 
   const proxyNames = supportedNodes.map((node) => node.name);
@@ -259,17 +259,17 @@ export function renderClashSubscription(nodes) {
   });
 
   lines.push('proxy-groups:');
-  lines.push('  - name: "🚀 节点选择"');
+  lines.push('  - name: "🚀 節點選擇"');
   lines.push('    type: select');
-  lines.push(`    proxies: ["♻️ 自动选择", ${proxyNames.map(yamlQuote).join(', ')}]`);
-  lines.push('  - name: "♻️ 自动选择"');
+  lines.push(`    proxies: ["♻️ 自動選擇", ${proxyNames.map(yamlQuote).join(', ')}]`);
+  lines.push('  - name: "♻️ 自動選擇"');
   lines.push('    type: url-test');
   lines.push(`    url: ${yamlQuote(DEFAULT_TEST_URL)}`);
   lines.push('    interval: 300');
   lines.push('    tolerance: 50');
   lines.push(`    proxies: [${proxyNames.map(yamlQuote).join(', ')}]`);
   lines.push('rules:');
-  lines.push('  - MATCH,🚀 节点选择');
+  lines.push('  - MATCH,🚀 節點選擇');
 
   return lines.join('\n') + '\n';
 }
@@ -277,7 +277,7 @@ export function renderClashSubscription(nodes) {
 export function renderSurgeSubscription(nodes, requestUrl) {
   const supportedNodes = nodes.filter((node) => node.type === 'vmess' || node.type === 'trojan');
   if (!supportedNodes.length) {
-    throw new Error('当前 Surge 导出仅支持 VMess / Trojan 节点。你的示例 VMess 节点可以正常使用该导出。');
+    throw new Error('當前 Surge 導出僅支持 VMess / Trojan 節點。你的示例 VMess 節點可以正常使用該導出。');
   }
 
   const proxyNames = supportedNodes.map((node) => sanitizeSurgeName(node.name));
@@ -299,11 +299,11 @@ export function renderSurgeSubscription(nodes, requestUrl) {
 
   lines.push('');
   lines.push('[Proxy Group]');
-  lines.push(`🚀 节点选择 = select, ♻️ 自动选择, ${proxyNames.join(', ')}`);
-  lines.push(`♻️ 自动选择 = url-test, ${proxyNames.join(', ')}, url=${DEFAULT_TEST_URL}, interval=600, tolerance=50`);
+  lines.push(`🚀 節點選擇 = select, ♻️ 自動選擇, ${proxyNames.join(', ')}`);
+  lines.push(`♻️ 自動選擇 = url-test, ${proxyNames.join(', ')}, url=${DEFAULT_TEST_URL}, interval=600, tolerance=50`);
   lines.push('');
   lines.push('[Rule]');
-  lines.push('FINAL, 🚀 节点选择');
+  lines.push('FINAL, 🚀 節點選擇');
   lines.push('');
 
   return lines.join('\n');
@@ -318,7 +318,7 @@ export function renderNodeUri(node) {
     case 'trojan':
       return renderTrojanUri(node);
     default:
-      throw new Error(`未知节点类型：${node.type}`);
+      throw new Error(`未知節點類型：${node.type}`);
   }
 }
 
@@ -426,7 +426,7 @@ function parseVmessUri(uri) {
   const port = normalizePort(data.port, 443);
   const uuid = String(data.id || '').trim();
   if (!server || !uuid) {
-    throw new Error('VMess 链接缺少 add 或 id');
+    throw new Error('VMess 鏈接缺少 add 或 id');
   }
 
   return {
@@ -459,7 +459,7 @@ function parseVlessUri(uri) {
   const port = normalizePort(url.port || params.port, 443);
   const uuid = decodeURIComponent(url.username || '').trim();
   if (!server || !uuid) {
-    throw new Error('VLESS 链接缺少主机或 UUID');
+    throw new Error('VLESS 鏈接缺少主機或 UUID');
   }
 
   const network = String(params.type || 'tcp').trim() || 'tcp';
@@ -495,7 +495,7 @@ function parseTrojanUri(uri) {
   const port = normalizePort(url.port || params.port, 443);
   const password = decodeURIComponent(url.username || '').trim();
   if (!server || !password) {
-    throw new Error('Trojan 链接缺少主机或密码');
+    throw new Error('Trojan 鏈接缺少主機或密碼');
   }
 
   const security = String(params.security || 'tls').trim() || 'tls';
@@ -524,7 +524,7 @@ function parseTrojanUri(uri) {
 function parseEndpoint(rawLine) {
   const raw = String(rawLine || '').trim();
   if (!raw) {
-    throw new Error('优选地址为空');
+    throw new Error('優選地址爲空');
   }
 
   const hashIndex = raw.indexOf('#');
@@ -533,7 +533,7 @@ function parseEndpoint(rawLine) {
   const { host, port } = splitHostAndPort(hostPart);
 
   if (!host) {
-    throw new Error(`无效地址：${raw}`);
+    throw new Error(`無效地址：${raw}`);
   }
 
   return { host, port, label };
@@ -548,7 +548,7 @@ function splitHostAndPort(input) {
   if (value.startsWith('[')) {
     const match = value.match(/^\[([^\]]+)](?::(\d+))?$/);
     if (!match) {
-      throw new Error(`IPv6 地址格式错误：${value}`);
+      throw new Error(`IPv6 地址格式錯誤：${value}`);
     }
     return {
       host: match[1],
@@ -558,7 +558,7 @@ function splitHostAndPort(input) {
 
   const colonCount = (value.match(/:/g) || []).length;
   if (colonCount > 1) {
-    // 视为裸 IPv6，不拆端口
+    // 視爲裸 IPv6，不拆端口
     return { host: value, port: undefined };
   }
 
@@ -713,7 +713,7 @@ function normalizePort(value, fallback) {
   if (fallback !== undefined) {
     return fallback;
   }
-  throw new Error(`端口无效：${value}`);
+  throw new Error(`端口無效：${value}`);
 }
 
 function normalizeInteger(value, fallback = 0) {
