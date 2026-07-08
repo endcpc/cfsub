@@ -59,7 +59,7 @@ form.addEventListener('submit', async (event) => {
 
     const data = await response.json();
     if (!response.ok || !data.ok) {
-      throw new Error(data.error || '生成失败');
+      throw new Error(data.error || '生成失敗');
     }
 
     autoUrl.value = data.urls.auto;
@@ -95,11 +95,11 @@ form.addEventListener('submit', async (event) => {
 
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (error) {
-    warningBox.textContent = error.message || '请求失败';
+    warningBox.textContent = error.message || '請求失敗';
     warningBox.classList.remove('hidden');
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = '生成订阅';
+    submitBtn.textContent = '生成訂閱';
   }
 });
 
@@ -113,7 +113,7 @@ document.addEventListener('click', async (event) => {
     try {
       await navigator.clipboard.writeText(input.value);
       const originalText = copyButton.textContent;
-      copyButton.textContent = '已复制';
+      copyButton.textContent = '已複製';
       setTimeout(() => {
         copyButton.textContent = originalText;
       }, 1200);
@@ -130,13 +130,13 @@ document.addEventListener('click', async (event) => {
 
     const input = document.getElementById(qrButton.dataset.qrcodeTarget);
     if (!input?.value) {
-      warningBox.textContent = '请先生成订阅链接，再显示二维码。';
+      warningBox.textContent = '請先生成訂閱鏈接，再顯示二維碼。';
       warningBox.classList.remove('hidden');
       return;
     }
 
     if (!window.QRCode) {
-      warningBox.textContent = '二维码组件加载失败，请刷新页面后重试。';
+      warningBox.textContent = '二維碼組件加載失敗，請刷新頁面後重試。';
       warningBox.classList.remove('hidden');
       return;
     }
